@@ -13,7 +13,6 @@ const bookmarks = [{
   content: 'This is the first link'
 }];
 
-
 bookmarkRouter
   .route('/bookmarks')
   .get((req, res) => {
