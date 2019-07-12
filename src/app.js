@@ -4,7 +4,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
-const bookmarkRouter = require('./bookmark/bookmarkRouter')
+const validateBearerToken = require('./validate-bearer-token')
+const bookmarksRouter = require('./bookmark/bookmarkRouter')
 
 const app = express()
 
@@ -15,43 +16,9 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption))
 app.use(cors())
 app.use(helmet())
-
-// this could be importedstart
-app.use(function validateBearerToken(req, res, next) {
-  const apiToken = process.env.API_TOKEN
-  const authToken = req.get('Authorization')
-
-  if (!authToken || authToken.split(' ')[1] !== apiToken) {
-    return res.status(401).json({ error: 'Unauthorized request' })
-  }
-  // move to the next middleware
-  next()
-})
+app.use(validateBearerToken)
 
 app.use(bookmarksRouter)
-
-// app.get('/bookmarks', (req,res,next) => {
-//   const knexInstance = req.app.get('db')
-//   BookmarksService.getAllBookmarks(knexInstance)
-//     .then(articles => {
-//       res.json(articles)
-//     })
-//     .catch(next)
-// })
-
-// app.get('/bookmarks/:bookmark_id', (req, res, next) => {
-//   const knexInstance = req.app.get('db')
-//   BookmarksService.getById(knexInstance, req.params.bookmark_id)
-//     .then(article => {
-//       if (!article) {
-//         return res.status(404).json({
-//           error: { message: `Bookmark doesn't exist` }
-//         })
-//       }
-//       res.json(article)
-//     })
-//     .catch(next)
-// })
 
 // Server is Working!
 app.get('/', (req, res) => {
