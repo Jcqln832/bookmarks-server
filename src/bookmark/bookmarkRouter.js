@@ -68,7 +68,6 @@ bookmarksRouter
     )
     .then(bookmark => {
       if (!bookmark) {
-        logger.error(`Bookmark with id ${id} not found.`)
         return res.status(404).json({
           error: { message: `Bookmark Not Found` }
         })
@@ -84,10 +83,9 @@ bookmarksRouter
   .delete((req, res, next) => {
     BookmarksService.deleteBookmark(
       req.app.get('db'),
-      bookmark_id
+      req.params.id
     )
     .then(numRowsAffected => {
-      logger.info(`Bookmark with id ${bookmark_id} deleted.`)
       res.status(204).end()
     })
     .catch(next)
